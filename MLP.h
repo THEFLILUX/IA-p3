@@ -46,7 +46,7 @@ public:
     void load_data(){
         ifstream archivo("data.csv");
         if (archivo.is_open()) {
-            string campos[32], fila;
+            string campos[128], fila;
             int numeroFilas = 0;
             while (!archivo.eof()) {
                 getline(archivo, fila);
@@ -57,7 +57,7 @@ public:
                     contador++;
                 }
                 vector <double> filaData;
-                for (int i = 0; i < 32; i++) {
+                for (int i = 0; i < 128; i++) {
                     if (i != 1) {
                         filaData.emplace_back(stof(campos[i]));
                     } else {
