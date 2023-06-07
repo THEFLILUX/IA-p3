@@ -8,14 +8,12 @@
 
 class MLP {
     typedef boost::numeric::ublas::matrix<double> Mdouble;
-    typedef vector<int> Vi;
+    typedef vector<int> vec;
 private:
-    
-    int tab[4] = {0,0,0,0}; //Matriz de confusion
     
     vector<ActivationFunction*>f; //Neuronas por capa
     
-    Vi pPerLayer; //Numero de perceptrones por capa (hidden layer)
+    vec pPerLayer; //Numero de perceptrones por capa (hidden layer)
 
     vector<Mdouble> pesos; //Pesos
 
@@ -33,7 +31,7 @@ private:
     Mdouble MLP_ouput;
 
 public: 
-    MLP(Vi initial_states,int n_out,vector<ActivationFunction*> actfunct) {
+    MLP(vec initial_states,int n_out,vector<ActivationFunction*> actfunct) {
         pPerLayer = initial_states;
         n_capas = pPerLayer.size();
         n_outputs = n_out;
@@ -45,9 +43,41 @@ public:
         shuffleAndSplit();
     }
 
-    void load_data(){}
+    void load_data(){
+        ifstream archivo("data.csv");
+        if (archivo.is_open()) {
+            string campos[32], fila;
+            int numeroFilas = 0;
+            while (!archivo.eof()) {
+                getline(archivo, fila);
+                istringstream stringStream(fila);
+                unsigned int contador = 0;
+                while (getline(stringStream, fila, ',')) {
+                    campos[contador] = fila;
+                    contador++;
+                }
+                vector <double> filaData;
+                for (int i = 0; i < 32; i++) {
+                    if (i != 1) {
+                        filaData.emplace_back(stof(campos[i]));
+                    } else {
+                        if (campos[i] == "M") {
+                            Y.emplace_back(true);
+                        } else {
+                            Y.emplace_back(false);
+                        }
+                    }
+                }
+                feature_vectors.emplace_back(filaData);
+                numeroFilas++;
+            }
+        }
+        archivo.close();
+    }
 
     void initialization(){}
+
+    void init_matrix(Mdouble *mat){} //Inicializacion de matrices de pesos con valores random
 
     void fit(int epochs,double lrate){}
 
@@ -58,8 +88,6 @@ public:
     void shuffleAndSplit(float train=1) {}
 
     void testing(){}
-    
-    void init_matrix(Mdouble *mat){} //Inicializacion de matrices de pesos con valores random
 };
 
 #endif
