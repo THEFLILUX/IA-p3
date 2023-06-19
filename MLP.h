@@ -5,6 +5,7 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/operation.hpp>
+#include <boost/random.hpp>
 #include "ActivationFunction.cpp"
 using namespace std;
 
@@ -77,19 +78,76 @@ public:
         archivo.close();
     }
 
-    void initialization(){}
+    void initialization(){
+        Mdouble aux;
+        input = Mdouble(1,n_features);
+        init_matrix(&input);
 
-    void init_matrix(Mdouble *mat){} //Inicializacion de matrices de pesos con valores random
+        //output = Mdouble(1,n_outputs);
+        //init_matrix(&output);
 
-    void fit(int epochs,double lrate){}
+        for(int i = 0;i<n_capas;i++){
+            //Creo matriz de pesos y lo agrego al vector de pesos
+            if(i==0){
+                aux = Mdouble(n_features,pPerLayer[i]);
+                init_matrix(&aux);
+                pesos.push_back(aux);
+            }
+            else {
+                aux = Mdouble(pPerLayer[i-1],pPerLayer[i]);
+                init_matrix(&aux);
+                pesos.push_back(aux);
+            }
+        }
+        aux = Mdouble(pPerLayer[n_capas-1],n_outputs);
+        init_matrix(&aux);
+        pesos.push_back(aux);
+    }
 
-    void forward(vector<double> X_f,int flag) {}
+    void init_matrix(Mdouble *mat){ //Inicializacion de matrices de pesos con valores random
+        std::time_t now = std::time(0);
+        boost::random::mt19937 gen{static_cast<std::uint32_t>(now)};
+        boost::random::uniform_int_distribution<> dist{1, 10000};
+        for (int i = 0;i< mat->size1();i++){
+            for (int j = 0;j< mat->size2();j++)
+                mat->operator()(i,j)= double(dist(gen)/10000.0);
+        }
+    }
+
+    void fit(int epochs,double lrate){
+        for(int i = 0;i<epochs;i++){
+            cout<<"Epoch"<<i+1<<endl;
+            for(int j = 0;j<X_train.size();j++){
+                //cout<<"size"<<X_f.size()<<endl;
+                forward(X_train[j],0);
+                backward(j,lrate,i);
+            }
+        }
+    }
+
+    void forward(boost::container::vector <double> X_f,int flag) {}
 
     void backward(int imgid,double lrate,int epoch) {}
 
-    void shuffleAndSplit(float train=1) {}
-
-    void testing(){}
+    void shuffleAndSplit(float train=1) {
+        int ft_size = feature_vectors.size();
+        // Realizar el shuffle de la data
+        srand(10);
+        for (int i=0; i<ft_size; i++) {
+            int j = i + rand() % (ft_size - i);
+            swap(feature_vectors[i], feature_vectors[j]);
+            swap(Y[i], Y[j]);
+        }
+        for (int i=0; i<ft_size; i++) {
+            if (i < ft_size*train) {
+                X_train.push_back(feature_vectors[i]);
+                Y_train.push_back(Y[i]);
+            } else {
+                X_test.push_back(feature_vectors[i]);
+                Y_test.push_back(Y[i]);
+            }
+        }
+    }
 };
 
 #endif
