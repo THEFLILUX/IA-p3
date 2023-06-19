@@ -1,37 +1,39 @@
 #ifndef MLP_H
 #define MLP_H
 
-#include <boost/numeric/ublas/vector.hpp>
+#include <boost/container/vector.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/operation.hpp>
+#include "ActivationFunction.cpp"
+using namespace std;
 
 class MLP {
     typedef boost::numeric::ublas::matrix<double> Mdouble;
-    typedef vector<int> vec;
+    typedef boost::container::vector<int> vec;
 private:
-    
-    vector<ActivationFunction*>f; //Neuronas por capa
-    
+
+    boost::container::vector<ActivationFunction*>f; //Neuronas por capa
+
     vec pPerLayer; //Numero de perceptrones por capa (hidden layer)
 
-    vector<Mdouble> pesos; //Pesos
+    boost::container::vector<Mdouble> pesos; //Pesos
 
-    vector<Mdouble> outputs; //Outputs antes de la funcion de activacion
-    
+    boost::container::vector<Mdouble> outputs; //Outputs antes de la funcion de activacion
+
     int n_features,n_outputs,n_capas; // num capas ocultas
-    
-    vector <vector<double>> feature_vectors; //Vectores Caracteristicas
-    vector <bool> Y;
 
-    vector <vector<double>> X_train, X_test;
-    vector<bool> Y_train, Y_test;
-    
+    boost::container::vector <boost::container::vector<double>> feature_vectors; //Vectores Caracteristicas
+    boost::container::vector <bool> Y;
+
+    boost::container::vector <boost::container::vector<double>> X_train, X_test;
+    boost::container::vector<bool> Y_train, Y_test;
+
     Mdouble input;
     Mdouble MLP_ouput;
 
-public: 
-    MLP(vec initial_states,int n_out,vector<ActivationFunction*> actfunct) {
+public:
+    MLP(vec initial_states,int n_out,boost::container::vector<ActivationFunction*> actfunct) {
         pPerLayer = initial_states;
         n_capas = pPerLayer.size();
         n_outputs = n_out;
@@ -56,7 +58,7 @@ public:
                     campos[contador] = fila;
                     contador++;
                 }
-                vector <double> filaData;
+                boost::container::vector <double> filaData;
                 for (int i = 0; i < 128; i++) {
                     if (i != 1) {
                         filaData.emplace_back(stof(campos[i]));
