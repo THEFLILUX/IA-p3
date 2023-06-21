@@ -3,6 +3,33 @@
 #include <deque>
 #include <iomanip>
 
+std::vector<float> normalizeVector(const std::vector<float>& values) {
+    // Find the minimum and maximum values in the vector
+    float minVal = *std::min_element(values.begin(), values.end());
+    float maxVal = *std::max_element(values.begin(), values.end());
+
+    // Perform Min-Max normalization
+    std::vector<float> normalizedValues;
+    for (const auto& value : values) {
+        float normalizedValue = (value - minVal) / (maxVal - minVal);
+        normalizedValues.push_back(normalizedValue);
+    }
+
+    return normalizedValues;
+}
+
+// Function to unnormalize a vector
+std::vector<float> unnormalizeVector(const std::vector<float>& normalizedValues, float minVal, float maxVal) {
+    // Perform the inverse transformation
+    std::vector<float> unnormalizedValues;
+    for (const auto& value : normalizedValues) {
+        float unnormalizedValue = value * (maxVal - minVal) + minVal;
+        unnormalizedValues.push_back(unnormalizedValue);
+    }
+
+    return unnormalizedValues;
+}
+
 // helper to initialize multi-layer perceptron with n hidden layers each w/ same num hidden units
 auto make_model(size_t in_channels, size_t out_channels, size_t hidden_units_per_layer, int hidden_layers, float lr) {
   std::vector<size_t> units_per_layer;
@@ -72,46 +99,62 @@ int main() {
 
     data.print_shape();
     labels.print_shape();
+
+    //normalize data and labels
+    labels.data = normalizeVector(labels.data); 
+
+    data.data = normalizeVector(data.data);
    
     int in_channels, out_channels, hidden_units_per_layer, hidden_layers;
     float lr;
 
-    auto model = make_model(in_channels=128, out_channels=1, hidden_units_per_layer=50, hidden_layers=1, lr=.5f);
+    auto model = make_model(in_channels=128, out_channels=1, hidden_units_per_layer=100, hidden_layers=3, lr=.001f);
 
     // // train
     std::ofstream my_file;
     my_file.open ("train.text");
-    int print_every{10};
+    int print_every{401};
 
     float mse;
     auto deque = std::deque<float>(print_every);
 
-    data.get_row(0).print_shape();
+    int epochs = 100;
+    int min_loss = 1e9;
 
-    for(int i = 0; i < 487; ++i) {
-        auto x = data.get_row(i);
-        auto y = labels.get_row(i);
+    for(int epoch = 0; epoch < epochs; ++epoch) {
 
-        auto y_hat = model(x.transpose());  // forward pass
-        model.backprop(y); // backward pass
+        deque.clear();
+        
+        for(int i = 0; i < 487; ++i) {
+            // generate (x, y) training data
+            auto x = data.get_row(i);
+            auto y = labels.get_row(i);
 
-        // compute and print error
-        mse = (y - y_hat).square().data[0];
-        deque.push_back(mse);
+            auto y_hat = model(x.transpose());  // forward pass
+            model.backprop(y); // backward pass
 
-        if ((i+1)%print_every==0) {
+            // compute and print error
+            mse = (y - y_hat).square().data[0];
+            deque.push_back(mse);
+            
             log(my_file, x, y, y_hat);
             my_file << mse << " " << x.data[0] << " " << y.data[0] << " " << y_hat.data[0] << " \n";
-            std::cout << std::setprecision(4) << std::scientific << "iter: " << i << " -- loss: " << mean(deque) << std::endl;
+
         }
+
+        std::cout << std::setprecision(4) << std::scientific << "iter: " << epoch << " -- loss: " << mean(deque) << std::endl;
+        
     }
 
-    //print accuracy:
+    // print accuracy:
     int cnt = 0;
+    labels.data = unnormalizeVector(labels.data, 1, 24);
+
     for (int i = 0; i<labels.data.size(); i++){
         auto x = data.get_row(i);
         auto y = labels.get_row(i);
         auto y_hat = model(x.transpose());
+        y_hat.data = unnormalizeVector(y_hat.data, 1, 24);
         
         if (round(y.data[i]) == round(y_hat.data[i])){
             cnt++;
