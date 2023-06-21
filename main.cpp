@@ -7,6 +7,7 @@ std::vector<float> normalizeVector(const std::vector<float>& values) {
     // Find the minimum and maximum values in the vector
     float minVal = *std::min_element(values.begin(), values.end());
     float maxVal = *std::max_element(values.begin(), values.end());
+    std::cout<<minVal<<" "<<maxVal<<std::endl;
 
     // Perform Min-Max normalization
     std::vector<float> normalizedValues;
@@ -108,7 +109,7 @@ int main() {
     int in_channels, out_channels, hidden_units_per_layer, hidden_layers;
     float lr;
 
-    auto model = make_model(in_channels=128, out_channels=1, hidden_units_per_layer=100, hidden_layers=3, lr=.001f);
+    auto model = make_model(in_channels=128, out_channels=1, hidden_units_per_layer=100, hidden_layers=3, lr=.5f);
 
     // // train
     std::ofstream my_file;
@@ -118,7 +119,7 @@ int main() {
     float mse;
     auto deque = std::deque<float>(print_every);
 
-    int epochs = 100;
+    int epochs = 1000;
     int min_loss = 1e9;
 
     for(int epoch = 0; epoch < epochs; ++epoch) {
@@ -137,17 +138,14 @@ int main() {
             mse = (y - y_hat).square().data[0];
             deque.push_back(mse);
             
-            log(my_file, x, y, y_hat);
-            my_file << mse << " " << x.data[0] << " " << y.data[0] << " " << y_hat.data[0] << " \n";
-
         }
-
+    
         std::cout << std::setprecision(4) << std::scientific << "iter: " << epoch << " -- loss: " << mean(deque) << std::endl;
         
     }
 
     // print accuracy:
-    int cnt = 0;
+    float cnt = 0;
     labels.data = unnormalizeVector(labels.data, 1, 24);
 
     for (int i = 0; i<labels.data.size(); i++){
@@ -156,12 +154,14 @@ int main() {
         auto y_hat = model(x.transpose());
         y_hat.data = unnormalizeVector(y_hat.data, 1, 24);
         
-        if (round(y.data[i]) == round(y_hat.data[i])){
+        if (y.data[i] - y_hat.data[i] < 1){
             cnt++;
         }
+
+        std::cout<< "y: " << y.data[i] << "\t||\t y_hat: " << y_hat.data[i] << std::endl;
     }
     
-    float acc = cnt/labels.data.size();
+    float acc = cnt/487.f;
     std::cout << "Accuracy: " << acc << std::endl;
 
     my_file.close();

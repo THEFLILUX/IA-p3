@@ -1,0 +1,39 @@
+Matrix Size([487, 128])
+Matrix Size([487, 1])
+1 24
+-818.444 89.0828
+iter: 0 -- loss: 1.0942e-01
+iter: 1 -- loss: 9.6773e-02
+iter: 2 -- loss: 9.6771e-02
+iter: 3 -- loss: 9.6770e-02
+iter: 4 -- loss: 9.6769e-02
+iter: 5 -- loss: 9.6767e-02
+iter: 6 -- loss: 9.6766e-02
+iter: 7 -- loss: 9.6765e-02
+iter: 8 -- loss: 9.6763e-02
+iter: 9 -- loss: 9.6762e-02
+iter: 10 -- loss: 9.6761e-02
+iter: 11 -- loss: 9.6760e-02
+iter: 12 -- loss: 9.6758e-02
+iter: 13 -- loss: 9.6757e-02
+iter: 14 -- loss: 9.6756e-02
+iter: 15 -- loss: 9.6755e-02
+iter: 16 -- loss: 9.6753e-02
+iter: 17 -- loss: 9.6752e-02
+iter: 18 -- loss: 9.6751e-02
+iter: 19 -- loss: 9.6750e-02
+iter: 20 -- loss: 9.6748e-02
+iter: 21 -- loss: 9.6747e-02
+iter: 22 -- loss: 9.6746e-02
+iter: 23 -- loss: 9.6745e-02
+iter: 24 -- loss: 9.6744e-02
+iter: 25 -- loss: 9.6742e-02
+iter: 26 -- loss: 9.6741e-02
+iter: 27 -- loss: 9.6740e-02
+iter: 28 -- loss: 9.6739e-02
+iter: 29 -- loss: 9.6738e-02
+iter: 30 -- loss: 9.6736e-02
+iter: 31 -- loss: 9.6735e-02
+iter: 32 -- loss: 9.6734e-02
+iter: 33 -- loss: 9.6733e-02
+iter: 34 -- loss: 9.6732e-02
