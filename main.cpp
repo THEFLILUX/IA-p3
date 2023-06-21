@@ -84,7 +84,7 @@ int main() {
 
     // // train
     std::ofstream my_file;
-    my_file.open ("train.csv");
+    my_file.open ("train.text");
     int print_every{10};
 
     float mse;
@@ -111,5 +111,7 @@ int main() {
         }
 
     }
+
+    my_file.close();
 
 }
