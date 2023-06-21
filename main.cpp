@@ -4,11 +4,7 @@
 #include <iomanip>
 
 // helper to initialize multi-layer perceptron with n hidden layers each w/ same num hidden units
-auto make_model(size_t in_channels,
-                          size_t out_channels,
-                          size_t hidden_units_per_layer,
-                          int hidden_layers,
-                          float lr) {
+auto make_model(size_t in_channels, size_t out_channels, size_t hidden_units_per_layer, int hidden_layers, float lr) {
   std::vector<size_t> units_per_layer;
 
   units_per_layer.push_back(in_channels);
@@ -93,7 +89,6 @@ int main() {
     data.get_row(0).print_shape();
 
     for(int i = 0; i < 487; ++i) {
-        // generate (x, y) training data
         auto x = data.get_row(i);
         auto y = labels.get_row(i);
 
@@ -109,9 +104,24 @@ int main() {
             my_file << mse << " " << x.data[0] << " " << y.data[0] << " " << y_hat.data[0] << " \n";
             std::cout << std::setprecision(4) << std::scientific << "iter: " << i << " -- loss: " << mean(deque) << std::endl;
         }
-
     }
+
+    //print accuracy:
+    int cnt = 0;
+    for (int i = 0; i<labels.data.size(); i++){
+        auto x = data.get_row(i);
+        auto y = labels.get_row(i);
+        auto y_hat = model(x.transpose());
+        
+        if (round(y.data[i]) == round(y_hat.data[i])){
+            cnt++;
+        }
+    }
+    
+    float acc = cnt/labels.data.size();
+    std::cout << "Accuracy: " << acc << std::endl;
 
     my_file.close();
 
+    return 0;
 }
