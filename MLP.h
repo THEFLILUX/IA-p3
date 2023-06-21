@@ -1,6 +1,3 @@
-//
-// Created by Lyndon Duong on 12/21/21.
-//
 #include "matrix.h"
 #include <random>
 #include <utility>

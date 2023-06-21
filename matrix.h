@@ -1,7 +1,3 @@
-//
-// Created by Lyndon Duong on 12/21/21.
-//
-
 #include <vector>
 #include <cmath>
 #include <cassert>
