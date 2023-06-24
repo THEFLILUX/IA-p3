@@ -93,14 +93,12 @@ int main() {
 
     data.data = normalizeVector(data.data);
 
-    // data.data=unnormalizeVector(data.data, , );
-    
     int in_channels, out_channels, hidden_units_per_layer, hidden_layers;
     float lr;
 
-    auto model = make_model(in_channels=128, out_channels=1, hidden_units_per_layer=200, hidden_layers=1, lr=.5f);
+    auto model = make_model(in_channels=128, out_channels=1, hidden_units_per_layer=200, hidden_layers=3, lr=.5f);
 
-    // // train
+    // train
     
     float mse;
     std::deque<float> deque;
@@ -129,6 +127,8 @@ int main() {
         std::cout << std::setprecision(4) << "iter: " << epoch << " -- loss: " << mean(deque) << std::endl;
         
     }
+
+    //test
 
     std::ifstream file2("test.csv");
     std::getline(file2, line);  

@@ -74,7 +74,7 @@ class MLP {
 
       Matrix y = weight_matrices[i].matmul(prev);
       y = y + bias_vectors[i];
-      y = y.apply_function(mlp::sigmoid);
+      y = y.apply_function(mlp::tanh);
       activations[i+1] = y;
       prev = y;
     }
@@ -99,7 +99,7 @@ class MLP {
       auto Wt = weight_matrices[i].T();
       auto prev_errors = Wt.matmul(error);
 
-      auto d_outputs = activations[i+1].apply_function(d_sigmoid);
+      auto d_outputs = activations[i+1].apply_function(d_tanh);
       auto gradients = error.multiply_elementwise(d_outputs);
       gradients = gradients.multiply_scalar(lr);
       auto a_trans = activations[i].T();
