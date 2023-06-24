@@ -16,6 +16,26 @@ inline float d_sigmoid(float x){
   return (x * (1 - x));
 }
 
+// Activation function: ReLU
+inline float relu(float x) {
+  return x > 0 ? x : 0;
+}
+
+// ReLU derivative for backpropagation
+inline float d_relu(float x) {
+  return x > 0 ? 1 : 0;
+}
+
+// Activation function: tanh
+inline float tanh(float x) {
+  return std::tanh(x);
+}
+
+// tanh derivative for backpropagation
+inline float d_tanh(float x) {
+  return 1 - std::tanh(x) * std::tanh(x);
+}
+
 template<typename T>
 class MLP {
  public:

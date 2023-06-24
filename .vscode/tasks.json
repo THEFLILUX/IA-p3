@@ -3,17 +3,15 @@
 	"tasks": [
 		{
 			"type": "cppbuild",
-			"label": "C/C++: g++-11 build active file",
-			"command": "/usr/bin/g++-11",
+			"label": "C/C++: g++ build active file",
+			"command": "/usr/bin/g++",
 			"args": [
 				"-fdiagnostics-color=always",
+				"-std=c++20",
 				"-g",
 				"${file}",
-				"matrix.h",
-				"MLP.h",
 				"-o",
 				"${fileDirname}/${fileBasenameNoExtension}",
-				"-std=c++20",
 			],
 			"options": {
 				"cwd": "${fileDirname}"
@@ -22,7 +20,7 @@
 				"$gcc"
 			],
 			"group": "build",
-			"detail": "compiler: /usr/bin/g++-11"
+			"detail": "compiler: /usr/bin/g++"
 		}
 	]
 }

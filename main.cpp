@@ -2,14 +2,13 @@
 #include <fstream>
 #include <deque>
 #include <iomanip>
+#include <sstream>
 
 std::vector<float> normalizeVector(const std::vector<float>& values) {
-    // Find the minimum and maximum values in the vector
     float minVal = *std::min_element(values.begin(), values.end());
     float maxVal = *std::max_element(values.begin(), values.end());
     std::cout<<minVal<<" "<<maxVal<<std::endl;
 
-    // Perform Min-Max normalization
     std::vector<float> normalizedValues;
     for (const auto& value : values) {
         float normalizedValue = (value - minVal) / (maxVal - minVal);
@@ -54,16 +53,6 @@ auto mean(const auto &d) {
   return mu/d.size();
 }
 
-void log(auto &file, const auto &x, const auto &y, const auto &y_hat){
-  auto mse = (y.data[0] - y_hat.data[0]);
-  mse = mse*mse;
-
-  file << mse << " "
-       << x.data[0] << " "
-       << y.data[0] << " "
-       << y_hat.data[0] << " \n";
-}
-
 int main() {
     std::srand(21);
 
@@ -99,27 +88,29 @@ int main() {
     }
 
     data.print_shape();
+    
     labels.print_shape();
-
+    
     //normalize data and labels
     labels.data = normalizeVector(labels.data); 
 
+    data = data.add_scalar(819);
+
     data.data = normalizeVector(data.data);
-   
+
+    // data.data=unnormalizeVector(data.data, , );
+    
     int in_channels, out_channels, hidden_units_per_layer, hidden_layers;
     float lr;
 
-    auto model = make_model(in_channels=128, out_channels=1, hidden_units_per_layer=100, hidden_layers=3, lr=.5f);
+    auto model = make_model(in_channels=128, out_channels=1, hidden_units_per_layer=100, hidden_layers=1, lr=.5f);
 
     // // train
-    std::ofstream my_file;
-    my_file.open ("train.text");
-    int print_every{401};
-
+    
     float mse;
-    auto deque = std::deque<float>(print_every);
+    std::deque<float> deque;
 
-    int epochs = 1000;
+    int epochs = 3;
     int min_loss = 1e9;
 
     for(int epoch = 0; epoch < epochs; ++epoch) {
@@ -154,17 +145,17 @@ int main() {
         auto y_hat = model(x.transpose());
         y_hat.data = unnormalizeVector(y_hat.data, 1, 24);
         
-        if (y.data[i] - y_hat.data[i] < 1){
+        if (y.data[0] - y_hat.data[0] < 1){
             cnt++;
         }
 
-        std::cout<< "y: " << y.data[i] << "\t||\t y_hat: " << y_hat.data[i] << std::endl;
+        std::cout<< "y: " << y.data[0] << "\t||\t y_hat: " << y_hat.data[0] << std::endl;
     }
     
     float acc = cnt/487.f;
     std::cout << "Accuracy: " << acc << std::endl;
 
-    my_file.close();
+
 
     return 0;
 }
